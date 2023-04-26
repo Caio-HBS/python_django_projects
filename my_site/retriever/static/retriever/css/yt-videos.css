@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+
+html {
+    font-family: 'Open Sans', 'Lato', sans-serif;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 1.5rem;
+}
+
+body {
+    background-color: #1a1a1a;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-auto-rows: minmax(100px, auto);
+    gap: 20px;
+    justify-items: center;
+}
+
+.logo {
+    display: grid;
+    place-items: center;
+    color: white;
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.logo h2 {
+    margin-left: 10px;
+    text-align: center;
+}
+
+.video {
+    position: relative;
+    display: flex;
+    width: 800px;
+    height: 250px;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    background-color: black;
+    box-shadow: 0 0 10px #0000001a;
+    border-radius: 10px;
+    justify-content: space-between;
+    grid-row: auto;
+}
+
+.video a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profile-image {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    margin-right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 0px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.channel-name {
+    position: absolute;
+    top: 31px;
+    left: 80px;
+    margin: 0;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.channel-name-second {
+    position: absolute;
+    top: 150px;
+    left: 283px;
+    font-size: 12px;
+    color: #ffffff;
+}
+
+.post-date {
+    position: absolute;
+    top: 148px;
+    left: 470px;
+    font: inherit;
+    font-size: 12px;
+    color: #ffffff;
+}
+
+.title {
+    position: absolute;
+    top: 85px;
+    left: 283px;
+    margin-right: 20px;
+    font: inherit;
+    text-align: justify;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.thumbnail {
+    position: absolute;
+    top: 70px;
+    left: 70px;
+    width: 25%;
+}
+
+.description-excerpt {
+    position: absolute;
+    top: 190px;
+    left: 292px;
+    margin: 0;
+    font: inherit;
+    font-size: 14px;
+    color: #ffffff;
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+}

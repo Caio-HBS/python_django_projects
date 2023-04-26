@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+        
+html {
+    font-family: 'Open Sans', 'Lato', sans-serif;
+}
+
+body {
+    background-color: #E4DA97;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-auto-rows: minmax(100px, auto);
+    gap: 20px;
+    justify-items: center;
+    color: #381A06;
+}
+
+.logo {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    background-color: #E4DA97;
+    padding: 20px;
+}
+
+.logo img {
+    margin-top: 50px;
+    max-width: 100%;
+}
+
+
+#search-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+/* Estilos para o formulário */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form_control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 300px;
+}
+
+.form_control label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #381A06;
+}
+
+.form_control select,
+.form_control input[type="text"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form_control select:focus,
+.form_control input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form_control.invalid select,
+.form_control.invalid input[type="text"] {
+  border-color: #dc3545;
+}
+
+.form_control .errorlist {
+  margin-top: 5px;
+  color: #dc3545;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #601300;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #C53200;
+}
+
+button:active {
+  background-color: #C53200;
+}

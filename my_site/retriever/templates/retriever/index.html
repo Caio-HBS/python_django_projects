@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}
+    Tweets
+{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'retriever/css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="logo">
+  <div>
+      <a href="">
+          <img src="{% static 'retriever/images/logo_main.png' %}" alt="fetcher logo">
+      </a>
+  </div>
+
+<body>
+  <section id="search-form">
+    <h2>Search for Posts</h1>
+    <form action="{% url 'index_page' %}" method="POST">
+    {% csrf_token %}
+    {% for fields in form %}
+        <div class="form_control {% if fields.errors %}invalid{% endif %}">
+            {{ fields.label_tag }}
+            {{ fields }}
+            {{ fields.errors }}
+        </div>
+    {% endfor %}
+    <button>Submit search</button>
+  </form>
+  <script src="{% static 'retriever/js/index_toggleKeyword.js' %}"></script>
+
+</body>
+{% endblock %}

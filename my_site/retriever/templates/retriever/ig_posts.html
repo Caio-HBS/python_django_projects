@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}
+    IG Posts
+{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "retriever/css/ig_posts.css" %}">
+{% endblock %}
+
+{% block content %}
+<body>
+    <div class="logo">
+        <div>
+            <a href="{% url 'index_page' %}">
+                <img src="{% static 'retriever/images/logo_instagram.png' %}" alt="fetcher logo">
+            </a>
+            <h2>Retrieved IG Posts</h2>
+        </div>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <div class="post"><a href="{{ post.post_url }}">
+                    {% if post.media_type == 'CAROUSEL_ALBUM' %}
+                        <div class="carousel">
+                            {% for image in post.instagrampostimage_set.all %}
+                                <img src="{{ image.image_url }}" class="carousel-image">
+                            {% endfor %}
+                        </div>
+                    {% elif post.media_type == 'IMAGE' %}
+                        {% with image=post.instagrampostimage_set.get %}
+                            <img src="{{ image.image_url }}" class="image">
+                        {% endwith %}
+                    {% endif %}
+                    <img src="{{ post.profile_picture }}" class="profile-picture">
+                    <h2 class="username">{{ post.ig_username }}</h2>
+                    <p class="caption">{{ post.caption  }}</p>
+                    <p class="comments">&#9993; {{ post.comments_count }}</p><p class="likes">&#10084; {{ post.likes_count }}</p>
+                    <p class="post-time">{{ post.post_time }}</p>
+                </a></div>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}

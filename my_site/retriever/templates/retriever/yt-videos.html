@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}
+    Videos
+{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "retriever/css/yt-videos.css" %}">
+{% endblock %}
+
+{% block content %}
+    <body>
+        <div class="logo">
+            <div>
+                <a href="{% url 'index_page' %}">
+                    <img src="{% static 'retriever/images/logo_youtube.png' %}" alt="fetcher logo">
+                </a>
+                <h2>Retrieved Videos</h2>
+            </div>
+        <ul>
+            {% for video in videos %}
+                <li>
+                    <div class="video">
+                        <div><a href="{{ video.url }}">
+                            <img src="{{ video.profile_image }}" class="profile-image">
+                            <h2 class="channel-name">{{ video.channel_name }}</h2>    
+                            <img src="{{ video.thumbnail }}" class="thumbnail">
+                            <h2 class="title">{{ video.title }}</h2>
+                            <h2 class="channel-name-second">{{ video.channel_name }}</h2><p class="post-date">{{ video.upload_date }}</p>
+                            <p class="description-excerpt">{{ video.description_excerpt }}</p>
+                    </a></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </body>
+{% endblock %}
+</html>

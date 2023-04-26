@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_title %}
+    Tweets
+{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "retriever/css/tweets.css" %}">
+{% endblock %}
+
+{% block content %}
+    <body>
+        <div class="logo">
+            <div>
+                <a href="{% url 'index_page' %}">
+                    <img src="{% static 'retriever/images/logo_twitter.png' %}" alt="fetcher logo">
+                </a>
+                <h2>Retrieved Twitter posts</h2>
+            </div>
+        <ul>
+            {% for tweet in tweets %}
+            <li>
+                <div class="tweet">
+                    <div><a href="{{ tweet.url }}">
+                        <img src="{{ tweet.profile_image }}" class="profile-image">
+                        <h2 class="display-name">{{ tweet.display_name }}</h2>
+                        <h2 class="user">@{{ tweet.user }}</h2>
+                        <p class="post-date">{{ tweet.post_date }}</p>
+                        <p class="tweet-text">{{ tweet.tweet_text }}</p>
+                        <img src="{{ tweet.image }}" class="tweet-image">
+                    </a></div>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+{% endblock %}
+
