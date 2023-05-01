@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Dorin - Register{% endblock %}
+
+{% block css_files %}
+
+{% endblock %}
+
+{% block content %}
+    <form action={% url 'register_page'%} method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username"/>
+        <input type="text" name="email" placeholder="Enter email"/>
+        <input type="text" name="first-name" placeholder="Your first name"/>
+        <input type="text" name="last-name" placeholder="Your last name"/>
+        <input type="text" name="birthday" placeholder="Birthday (MM/DD/YYYY)"/>
+        <input type="text" name="slug" placeholder="Custom URL for your profile (15 characters)"/>
+        <input type="password" name="password" placeholder="Enter password"/>
+        <input type="password" name="confirm-password" placeholder="Enter password again"/>
+        {% if  password == password %}
+            <input type="submit" name="Login"/>
+        {% endif %}
+    </form>
+{% endblock %}

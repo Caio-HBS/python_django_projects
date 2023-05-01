@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Dorin - Login{% endblock %}
+
+{% block css_files %}
+
+{% endblock %}
+
+{% block content %}
+    <form action={% url 'login_page'%} method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username"/>
+        <input type="password" name="password" placeholder="Enter password"/>
+        <input type="submit" name="Login"/>
+    </form>
+{% endblock %}
+
