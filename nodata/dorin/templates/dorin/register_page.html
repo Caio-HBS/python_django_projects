@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <form action={% url 'register_page'%} method="POST">
+    <form action={% url 'register_page'%} method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="text" name="username" placeholder="Username"/>
         <input type="text" name="email" placeholder="Enter email"/>
@@ -18,8 +18,7 @@
         <input type="text" name="slug" placeholder="Custom URL for your profile (15 characters)"/>
         <input type="password" name="password" placeholder="Enter password"/>
         <input type="password" name="confirm-password" placeholder="Enter password again"/>
-        {% if  password == password %}
-            <input type="submit" name="Login"/>
-        {% endif %}
+        <input type="file" name="profile-picture">
+        <input type="submit" name="Register"/>
     </form>
 {% endblock %}

@@ -17,3 +17,20 @@ def user_logged_in(client, db):
     )
     client.force_login(user)
     return user
+
+
+@pytest.fixture
+def post_data_for_register(client, db):
+    """
+        Fixture to provide data to POST method in the registe page.
+    """
+    return {
+        'username': 'testuser',
+        'email': 'testuser@example.com',
+        'first-name': 'John',
+        'last-name': 'Doe',
+        'birthday': '01/01/1990',
+        'slug': 'testuser1234567',
+        'password': 'testpassword123',
+        'confirm-password': 'testpassword123',
+    }

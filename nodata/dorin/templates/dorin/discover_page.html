@@ -1,1 +1,18 @@
-Discover page
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Dorin - Discover{% endblock %}
+
+{% block css_files %}
+
+{% endblock %}
+
+{% block content %}
+    {% for post in posts %}
+        <div class="post">
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.post_text }}</p>
+            <p>Likes: {{ post.num_likes }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

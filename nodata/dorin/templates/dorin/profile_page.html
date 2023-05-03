@@ -1,1 +1,17 @@
-Profile page
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}{{ profile.user }}{% endblock %}
+
+{% block css_files %}
+
+{% endblock %}
+
+{% block content %}
+    {% for data in profile %}
+        {{ data.user }}
+        {{ data.birthday }}
+        {{ data.first_name }}
+        {{ data.last_name }}
+    {% endfor %}
+{% endblock %}
