@@ -9,26 +9,29 @@
 
 {% block content %}
 <h1>{{ profile }}</h1>
+<ul>
+        {% for post in posts %}
+            <li>
+            <h2>{{ post.post.title }}</h2>
+            <p>{{ post.post.post_text }}</p>
+            {% if post.post.image %}
+                <img src="{{ post.post.image.url }}" alt="post image">
+            {% endif %}
+            <p>Publication date: {{ post.post.publication_date_post }}</p>
+            <h3>Comments:</h3>
+            <ul>
+            {% for comment in post.comments %}
+                <li>{{ comment.comment_text }} - {{ comment.user }}</li>
+            {% empty %}
+                <li>No comments yet.</li>
+            {% endfor %}
+            </ul>
 
-    {% for post in posts %}
-        <h2>{{ post.post.title }}</h2>
-        <p>{{ post.post.post_text }}</p>
-        <img src="{{ post.post.image.url }}" alt="post image">
-        <p>Publication date: {{ post.post.publication_date_post }}</p>
-
-        <h3>Comments:</h3>
-        <ul>
-        {% for comment in post.comments %}
-            <li>{{ comment.comment_text }} - {{ comment.user }}</li>
+            <h3>Likes:</h3>
+            <p>{{ post.likes.count }} people like this post.</p>
+            </li>
         {% empty %}
-            <li>No comments yet.</li>
+            <p>No posts yet.</p>
         {% endfor %}
-        </ul>
-
-        <h3>Likes:</h3>
-        <p>{{ post.likes.count }} people like this post.</p>
-
-    {% empty %}
-        <p>No posts yet.</p>
-    {% endfor %}
+</ul>
 {% endblock %}

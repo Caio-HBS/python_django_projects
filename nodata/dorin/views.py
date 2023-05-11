@@ -62,7 +62,6 @@ def register_view(request):
         return redirect('feed_page')
     elif request.method == "POST":
         username = request.POST['username']
-        print(request.POST)
         # Tests to see if the username is already in use in the db.
         try:
             get_user = User.objects.get(username=username)
@@ -153,7 +152,11 @@ def new_post_view(request):
         get_user_profile = get_user.profile
         title = request.POST['title'][:50].rstrip()
         post_text = request.POST['post-text'].rstrip()
-        image = request.FILES['post-picture']
+        
+        try:
+            image = request.FILES['post-picture']
+        except:
+            image = ""
 
         new_post = Post.objects.create(
             parent_profile=get_user_profile, title=title, 
