@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
 
@@ -6,11 +7,34 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birthday = models.DateField()
-    pfp = models.ImageField(upload_to="profile_pictures")
+    pfp = models.ImageField(upload_to="profile_pictures", blank=True, null=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=35)
     custom_slug_profile = models.SlugField(max_length=15)
     friends = models.ManyToManyField('self', blank=True)
+
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def full_name(self):
+        return self.get_full_name()
+
+    def get_absolute_url(self):
+        return f"dorinsocialapi/profiles/{self.pk}/"
+
+    @property    
+    def endpoint(self):
+        return self.get_absolute_url()
+        
+    def get_custom_slug_profile(self):
+        return f"{reverse('profile_page', kwargs={'custom_slug_profile': self.custom_slug_profile})}"
+    
+    @property
+    def endpoint_custom_slug(self):
+        return self.get_custom_slug_profile()
+
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (@{self.user.username})"
@@ -22,7 +46,7 @@ class Post(models.Model):
     post_text = models.TextField(max_length=1000, null=False, blank=False)
     image = models.ImageField(upload_to="post_pictures", null=True)
     publication_date_post = models.DateTimeField(auto_now_add=True)
-    post_slug = models.SlugField(max_length=15)
+    post_slug = models.SlugField(max_length=15, unique=True)
 
     def __str__(self):
         return f"{self.parent_profile.user}: {self.title} ({self.publication_date_post})"
@@ -43,5 +67,5 @@ class Likes(models.Model):
     parent_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     likes = models.IntegerField(validators=[MinValueValidator(0)])
 
-def __str__(self):
-        return f"{self.likes} likes on post {self.parent_post}"
+    def __str__(self):
+            return f"{self.likes} likes on post {self.parent_post}"

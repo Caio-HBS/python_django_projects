@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'dorin',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,6 +83,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'nodata_postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': '23061999Mj',
+#         'HOST': 'localhost',
+#         'PORT': 5432,
+#     }
+# }
 
 
 # Password validation
@@ -136,3 +148,22 @@ MEDIA_URL = "/uploads/"
 
 LOGIN_URL = 'dorin/login/'
 LOGOUT_URL = 'dorin/logout/'
+
+REST_FRAMEWORK = {
+    #'DEFAULT_AUTHENTICATION_CLASSES': [
+    #    'rest_framework.authentication.SessionAuthentication',
+    #],
+    #'DEFAULT_PERMISSION_CLASSES': [
+    #    'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    #],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+        'PAGE_SIZE': 10,
+
+     'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+}

@@ -7,7 +7,6 @@ from dorin.models import (
     Likes
 )
 
-from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Q, Count
@@ -16,9 +15,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-
+from nodata.settings import BASE_DIR
 
 def index_view(request):
+    print(BASE_DIR)
     if request.user.is_authenticated:
         return redirect('feed_page')
     else:

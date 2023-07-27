@@ -1,8 +1,14 @@
+import os
 import pytest
 
 from dorin.models import Profile
 from django.contrib.auth.models import User
+from nodata.settings import BASE_DIR
 
+
+image_file_path = os.path.join(
+    BASE_DIR, r"dorin/tests/test_image.jpg"
+)
 
 @pytest.fixture
 def user_logged_in(client, db):
@@ -56,7 +62,7 @@ def post_data_for_register(client, db):
             client: uses the Pytest-Django built-in client.
             db: uses the Pytest-Django built-in db.
     """
-    image_file = open('dorin/tests/test_image.jpg', 'rb')
+    image_file = open(image_file_path, 'rb')
     return {
         'username': 'testuser',
         'email': 'testuser@example.com',
