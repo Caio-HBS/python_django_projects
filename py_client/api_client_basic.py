@@ -4,7 +4,7 @@ import requests
 def basic_retrieve(pk=""):
     endpoint = f"http://localhost:8000/dorinsocialapi/profiles/{pk}/update/"
     data = {
-        'first_name' : 'Martinho'
+        'first_name' : 'Martinhodaledasilva'
         #"full_name": "Martinho Daledale",
         #"endpoint": "dorinsocialapi/profiles/22/",
         #"endpoint_custom_slug": "/dorin/profile/martinho_daledale/"
