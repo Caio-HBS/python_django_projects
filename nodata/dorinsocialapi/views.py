@@ -1,4 +1,9 @@
-from rest_framework import generics, status, serializers
+from rest_framework import (
+    generics, 
+    status, 
+    serializers, 
+    permissions
+)
 from rest_framework.response import Response
 
 
@@ -7,16 +12,19 @@ from dorin.models import (
     Post,
 )
 
+
 from dorinsocialapi.serializers import (
     ProfileBasicSerializer,
     ProfileDetailSerializer,
     PostSerializer,
 )
+from dorinsocialapi.mixins import (
+    UserQuerySetMixin,
+    StaffEditorPermissionMixin,
+)
 
 
-class ProfileListAPIView(generics.ListAPIView):
-    # TODO: Implement high level security to allow only admin to see this view, 
-    #       otherwise return only the user object (if logged).
+class ProfileListAPIView(UserQuerySetMixin, generics.ListAPIView):
     """
         API view to retrieve a list of user profiles.
 
@@ -28,11 +36,10 @@ class ProfileListAPIView(generics.ListAPIView):
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileBasicSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
-class ProfileDetailAPIView(generics.RetrieveAPIView):
-    # TODO: Implement security so that only logged in users with permission will
-    #       be able to see/edit this.
+class ProfileDetailAPIView(UserQuerySetMixin, generics.RetrieveAPIView):
     """
         API view to retrieve a single user profile.
 
@@ -44,10 +51,8 @@ class ProfileDetailAPIView(generics.RetrieveAPIView):
     """
     serializer_class = ProfileDetailSerializer
     lookup_field = 'pk'
-
-    def get_queryset(self):
-        queryset = Profile.objects.prefetch_related('posts').all()
-        return queryset
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Profile.objects.prefetch_related('posts').all()
 
 
 class ProfileUpdateAPIView(generics.UpdateAPIView):
