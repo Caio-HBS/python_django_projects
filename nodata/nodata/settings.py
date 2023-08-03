@@ -153,11 +153,11 @@ REST_FRAMEWORK = {
     #'DEFAULT_AUTHENTICATION_CLASSES': [
     #    'rest_framework.authentication.SessionAuthentication',
     #],
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #    'dorinsocialapi.permissions.CanViewListOrOwnProfile',
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': [
+       'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-        'PAGE_SIZE': 10,
+        'PAGE_SIZE': 20,
 
      'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',

@@ -20,8 +20,9 @@ from dorinsocialapi.serializers import (
 )
 from dorinsocialapi.mixins import (
     UserQuerySetMixin,
-    StaffEditorPermissionMixin,
 )
+from dorinsocialapi.permissions import IsStaffOrOwnerPermission
+
 
 
 class ProfileListAPIView(UserQuerySetMixin, generics.ListAPIView):
@@ -56,8 +57,6 @@ class ProfileDetailAPIView(UserQuerySetMixin, generics.RetrieveAPIView):
 
 
 class ProfileUpdateAPIView(generics.UpdateAPIView):
-    # TODO: Implement security so that only authorized users or the owner of the
-    #       profile can use this endpoint.
     """
         API view to update a user profile.
 
@@ -70,6 +69,7 @@ class ProfileUpdateAPIView(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileBasicSerializer
     lookup_field = "pk"
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrOwnerPermission]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -84,8 +84,6 @@ class ProfileUpdateAPIView(generics.UpdateAPIView):
 
 
 class ProfileDestroyAPIView(generics.DestroyAPIView):
-    # TODO: Implement security so that only authorized users or the owner of the
-    #       profile can use this endpoint.
     """
         API view to delete a user profile (as well as all other user related 
         objects).
@@ -99,6 +97,7 @@ class ProfileDestroyAPIView(generics.DestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileBasicSerializer
     lookup_field = "pk"
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrOwnerPermission]
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -115,24 +114,27 @@ class ProfileDestroyAPIView(generics.DestroyAPIView):
 
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
-    # TODO: Implement security so that only authorized users and the owner of the
-    #       profile can see this.
     """
         API view to list and create posts.
 
         Inherits from DRF's ListCreateAPIView, providing an endpoint to
         retrieve a list of posts and create new posts.
 
-        Endpoint URL: /dorinsocialapi/posts/
+        Endpoint URL: /dorinsocialapi/profiles/<int:pk>/posts/
         HTTP Methods Allowed: GET, POST
     """
     serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
     def get_queryset(self):
         choosen_pk_for_profile = self.kwargs['pk']
         try:
             profile = Profile.objects.get(pk=choosen_pk_for_profile)
         except Profile.DoesNotExist:
+            return Post.objects.none()
+        
+        if not self.request.user.is_staff and profile.user != self.request.user:
             return Post.objects.none()
 
         queryset = Post.objects.all().filter(parent_profile=profile)
@@ -144,6 +146,11 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
             profile = Profile.objects.get(pk=choosen_pk_for_profile)
         except Profile.DoesNotExist:
             raise serializers.ValidationError("Couldn't find this profile")
+        
+        if not self.request.user.is_staff and profile.user != self.request.user:
+            raise serializers.ValidationError(
+                "You don't have permission to perform this action"
+            )
 
         serializer.is_valid(raise_exception=True)
         serializer.save(parent_profile=profile)

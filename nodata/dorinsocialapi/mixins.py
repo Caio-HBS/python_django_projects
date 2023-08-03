@@ -1,12 +1,6 @@
 from rest_framework import permissions
 
-from dorinsocialapi.permissions import IsStaffEditorPermission
-
-class StaffEditorPermissionMixin():
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
-
-
-class UserQuerySetMixin():
+class UserQuerySetMixin:
     """
         Determines what the queryset will be based on the user, if Staff/Admin,
         return full list, otherwise return only self.
@@ -20,3 +14,4 @@ class UserQuerySetMixin():
         if user.is_staff:
             return qs
         return qs.filter(**lookup_data)
+    
