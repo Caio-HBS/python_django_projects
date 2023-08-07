@@ -1,20 +1,19 @@
 import json
 import requests
 
-def basic_retrieve(pk=""):
-    endpoint = f"http://localhost:8000/dorinsocialapi/profiles/{pk}/update/"
-    data = {
-        'first_name' : 'Martinhodaledasilva'
-        #"full_name": "Martinho Daledale",
-        #"endpoint": "dorinsocialapi/profiles/22/",
-        #"endpoint_custom_slug": "/dorin/profile/martinho_daledale/"
-    }
-    get_response = requests.patch(endpoint, json=data)
+def basic_retrieve(token, pk=""):
+    endpoint = f"http://localhost:8000/dorinsocialapi/profiles/{pk}"
+    data = {}
+    headers = {"Authorization": f"Bearer {token}"}
+    get_response = requests.patch(endpoint, headers=headers, json=data)
     formatted_response = get_response.json()
     try:
         return print(json.dumps(formatted_response, indent=4))
     except:
         return print(get_response)
 
+pk = input("Do you have a primary-key? (If not, press Enter)")
+token_inp = input("What is your token?")
 
-basic_retrieve(22)
+basic_retrieve(token_inp, pk)
+
