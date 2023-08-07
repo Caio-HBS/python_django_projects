@@ -6,6 +6,5 @@ urlpatterns = [
     path('', include("dorin.urls")),
     path('dorin/', include("dorin.urls")),
     path('dorinsocialapi/', include('dorinsocialapi.urls')),
-    path('api-token-auth/', obtain_auth_token),
     path('admin/', admin.site.urls),
 ]

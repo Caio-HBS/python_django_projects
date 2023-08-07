@@ -170,4 +170,4 @@ testaço.py
 my_site/retriever/env.env
 nodata/dorin/temporary/generator.py
 nodata/uploads/
-py_client/api_client.py
+py_client/

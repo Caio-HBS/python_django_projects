@@ -1,27 +1,62 @@
+from django.utils import timezone
+
 from rest_framework import (
-    generics, 
-    status, 
-    serializers, 
-    permissions
+    authentication,    
+    generics,    
+    permissions,    
+    serializers,    
+    status,
 )
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
 
 from dorin.models import (
-    Profile,
     Post,
+    Profile,
 )
 
-
+from dorinsocialapi.authentication import TokenAuthentication
+from dorinsocialapi.mixins import UserQuerySetMixin
+from dorinsocialapi.permissions import IsStaffOrOwnerPermission
 from dorinsocialapi.serializers import (
+    PostSerializer,
     ProfileBasicSerializer,
     ProfileDetailSerializer,
-    PostSerializer,
 )
-from dorinsocialapi.mixins import (
-    UserQuerySetMixin,
-)
-from dorinsocialapi.permissions import IsStaffOrOwnerPermission
+
+
+
+class CustomAuthTokenView(ObtainAuthToken):
+    """
+        Creates and provides a new token once the user is authenticated. If 
+        authentication is met, provides both the token and user id for profile.
+        Also provides new token if the old one is more than seven days old.
+
+        Endpoint URL: /dorinsocialapi/get-auth-token//
+        HTTP Methods Allowed: POST
+    """
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        try:
+            token = Token.objects.get(user=user)
+            time_difference = timezone.now() - token.created
+            token_valid_duration = timezone.timedelta(days=7)
+        
+            if time_difference > token_valid_duration:
+                token.delete()
+                token = Token.objects.create(user=user)
+        
+        except Token.DoesNotExist:
+            token = Token.objects.create(user=user)
+
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+        })
 
 
 
@@ -38,6 +73,9 @@ class ProfileListAPIView(UserQuerySetMixin, generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileBasicSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        TokenAuthentication, authentication.SessionAuthentication
+    ]
 
 
 class ProfileDetailAPIView(UserQuerySetMixin, generics.RetrieveAPIView):
@@ -53,6 +91,9 @@ class ProfileDetailAPIView(UserQuerySetMixin, generics.RetrieveAPIView):
     serializer_class = ProfileDetailSerializer
     lookup_field = 'pk'
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        TokenAuthentication, authentication.SessionAuthentication
+    ]
     queryset = Profile.objects.prefetch_related('posts').all()
 
 
@@ -70,7 +111,10 @@ class ProfileUpdateAPIView(generics.UpdateAPIView):
     serializer_class = ProfileBasicSerializer
     lookup_field = "pk"
     permission_classes = [permissions.IsAuthenticated, IsStaffOrOwnerPermission]
-
+    authentication_classes = [
+        TokenAuthentication, authentication.SessionAuthentication
+    ]
+    
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -98,6 +142,9 @@ class ProfileDestroyAPIView(generics.DestroyAPIView):
     serializer_class = ProfileBasicSerializer
     lookup_field = "pk"
     permission_classes = [permissions.IsAuthenticated, IsStaffOrOwnerPermission]
+    authentication_classes = [
+        TokenAuthentication, authentication.SessionAuthentication
+    ]
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -125,6 +172,10 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
     """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        TokenAuthentication, authentication.SessionAuthentication
+    ]
+
 
 
     def get_queryset(self):

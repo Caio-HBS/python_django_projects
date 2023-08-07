@@ -1,5 +1,3 @@
-from rest_framework import permissions
-
 class UserQuerySetMixin:
     """
         Determines what the queryset will be based on the user, if Staff/Admin,

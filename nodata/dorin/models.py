@@ -13,7 +13,6 @@ class Profile(models.Model):
     custom_slug_profile = models.SlugField(max_length=15)
     friends = models.ManyToManyField('self', blank=True)
 
-
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
     
@@ -69,3 +68,4 @@ class Likes(models.Model):
 
     def __str__(self):
             return f"{self.likes} likes on post {self.parent_post}"
+    
