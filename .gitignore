@@ -170,3 +170,6 @@ testaço.py
 my_site/retriever/env.env
 nodata/dorin/temporary/generator.py
 nodata/uploads/
+nodata/staticfiles
+nodata/post_pictures
+nodata/profile_pictures

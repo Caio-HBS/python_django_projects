@@ -15,7 +15,12 @@ SECRET_KEY = 'django-insecure-us6&2j&urxy^j!4hkih)-jmnnzw#jg4qvb#m4-c$rza$g(!ph-
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = ['http://localhost', 'http://django', '*']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost']
+else:
+    ALLOWED_HOSTS = []
+    CSRF_TRUSTED_ORIGINS = []
 
 
 INSTALLED_APPS = [
@@ -105,17 +110,17 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static"
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = BASE_DIR / "uploads"
+STATIC_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 MEDIA_URL = "/uploads/"
 
