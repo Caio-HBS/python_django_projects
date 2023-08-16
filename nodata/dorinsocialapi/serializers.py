@@ -17,7 +17,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     publication_date = serializers.CharField(source='publication_date_post', read_only=True)
     parent_profile = serializers.CharField(source='parent_profile.custom_slug_profile', read_only=True)
-
+    
     comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Post
@@ -29,7 +29,6 @@ class PostSerializer(serializers.ModelSerializer):
             'publication_date',
             'post_slug',
             'comments',
-            'likes',
         ]
 
 

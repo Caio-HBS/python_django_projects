@@ -6,9 +6,8 @@ from dorin.models import (
     Comment, 
     Likes
 )
-
-from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.db.models import Q, Count
 from django.utils.text import slugify
 from django.contrib.auth import login, authenticate, logout
@@ -17,8 +16,17 @@ from django.contrib.auth.decorators import login_required
 
 from nodata.settings import BASE_DIR
 
+
 def index_view(request):
-    print(BASE_DIR)
+    """
+        Redirects users based on authentication status.
+
+        This view checks if the user is authenticated. If authenticated, it 
+        redirects to the feed page ('feed_page'). Otherwise, it redirects to the 
+        login page ('login_page').
+
+        URL Call: /
+    """
     if request.user.is_authenticated:
         return redirect('feed_page')
     else:
@@ -26,6 +34,14 @@ def index_view(request):
 
 
 def login_view(request):
+    """
+        View for loggin in users.
+
+        If the user is already logged in, redirects to feed page, otherwise
+        validates the post request for loggin them in.
+    
+        URL Call: dorin/login/
+    """
     if request.user.is_authenticated:
         return redirect('feed_page')
     
@@ -50,6 +66,15 @@ def login_view(request):
 
 
 def logout_view(request):
+    """
+        Logs the user out uppon hitting the URL based on login status.
+
+        If the user is logged in, logs out. Otherwise, simply redirects them to
+        the login page.
+
+        URL Call: dorin/logout/
+    """
+    
     if request.user.is_authenticated:
         logout(request)
         return redirect('login_page')
@@ -58,6 +83,14 @@ def logout_view(request):
     
 
 def register_view(request):
+    """
+        View for registering new users.
+
+        If the user is already logged in, redirects them to the feed page, 
+        otherwise validates the post request for register as new users.
+
+        URL Call: dorin/register/
+    """
     if request.user.is_authenticated:
         return redirect('feed_page')
     elif request.method == "POST":
@@ -78,7 +111,7 @@ def register_view(request):
                 first_name = request.POST['first-name']
                 last_name = request.POST['last-name']
                 birthday = request.POST['birthday']
-                pfp = request.FILES['profile-picture']
+                pfp = request.FILES['profile-picture'] or ""
                 formatted_birthday = datetime.strptime(birthday, "%m/%d/%Y")
                 formatted_birthday_to_final = formatted_birthday.strftime("%Y-%m-%d")
                 slug = slugify(request.POST['slug'])
@@ -87,7 +120,7 @@ def register_view(request):
                     username=username, email=email, password=password
                 )
                 new_user.save()
-                # Tests to see if the user was created. If it was, creates the 
+                # Tries to get the newly created user, if successful, creates the 
                 # profile object.
                 try:
                     get_new_user = User.objects.get(username=username)
@@ -115,6 +148,15 @@ def register_view(request):
 
 @login_required(login_url='login_page')
 def feed_view(request):
+    """
+        Feed view for seeing posts by the user and their friends (locked to
+        logged in users).
+
+        Queries the posts objects based on the user and their friends, passes it
+        to the html render.
+
+        URL Call: dorin/feed/
+    """
     # Retrieves the user from the request, so that the query can be made.
     user = request.user
     profile = Profile.objects.get(user=user)
@@ -138,6 +180,14 @@ def feed_view(request):
 
 @login_required(login_url='login_page')
 def new_post_view(request):
+    """
+        View dedicated to making new posts (locked to logged in users).
+
+        Validates the post request and makes a new post.
+
+        URL Call: feed/new-post/
+    """
+    # TODO: make a print statement for when the new post is made.
     if request.method == "POST":
         # Retrieves the user so that the new post can be saved,
         user = request.user
@@ -170,6 +220,19 @@ def new_post_view(request):
 
 @login_required(login_url='login_page')
 def single_profile_view(request, custom_slug_profile):
+    """
+        View for displaying specific profiles.
+        
+        Queries the db for a profile based on the custom_slug_profile passed in
+        through the url.
+
+        URL Call: profile/<slug:custom_slug_profile>/
+
+        Params:
+            custom_slug_profile: slug passed in the url reflecting an object on 
+            the db.
+
+    """
     try:
         profile = Profile.objects.filter(custom_slug_profile=custom_slug_profile)
     except:
@@ -200,6 +263,13 @@ def single_post_view(request, post_slug):
 
 @login_required(login_url='login_page')
 def discover_view(request):
+    """
+        Discover view for retrieving random posts (locked to logged in users).
+
+        Makes the query for random posts excluding those made by the user.
+
+        URL Call: dorin/discover/
+    """
     current_user = request.user
     current_profile = current_user.profile
     max_posts = 10
