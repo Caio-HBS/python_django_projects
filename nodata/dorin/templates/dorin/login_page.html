@@ -4,15 +4,44 @@
 {% block page_title %}Dorin - Login{% endblock %}
 
 {% block css_files %}
-
+<link rel="stylesheet" href="{% static "dorin/css/login_page.css" %}">
 {% endblock %}
 
 {% block content %}
-    <form action={% url 'login_page'%} method="POST">
+<div class='bold-line'></div>
+<div class='container'>
+  <div class='window'>
+    <div class='overlay'></div>
+    <div class='content'>
+      <div class='welcome'>Welcome to Dorin!</div>
+      <div class='subtitle'>To gain acces to our services, please login.</div>
+      <form action={% url 'login_page' %} method="POST" class='input-fields'>
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username"/>
-        <input type="password" name="password" placeholder="Enter password"/>
-        <input type="submit" name="Login"/>
-    </form>
-{% endblock %}
+        <input type="text" name="username" placeholder="{% if form.username.errors %}{{ form.username.errors|join:", " }}{% else %}Username{% endif %}" class="input-line full-width" required id="id_username">
+        <input type="password" name="password" placeholder="Password" class="input-line full-width" required id="id_password">
 
+        {% if form.errors %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <div class="alert alert-danger">
+                <p>{{ error }}</p>
+              </div>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+              <p>{{ error }}</p>
+            </div>
+          {% endfor %}
+        {% endif %}
+    <div class="spacing">
+        <span class="highlight"><a href="{% url 'about_us_page' %}">About us</a></span> | 
+        <span class="highlight"><a href="{% url 'register_page' %}">Create an account</a></span>
+    </div>
+        <input type="submit" name="Login" class='ghost-round full-width'/>
+      </div>
+      </form>
+  </div>
+</div>
+    
+{% endblock %}
