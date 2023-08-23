@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Dorin - About us{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "dorin/css/about_us.css" %}">
+{% endblock %}
+
+{% block content %}
+        <div class='bold-line'></div>
+        <div class='container'>
+            <div class='window'>
+                <div class='overlay'></div>
+                <div class='content'>
+                    <p>
+                        Welcome to our Django Project, a social media platform that serves as a 
+                        testament to our journey of exploration and learning. This project was 
+                        conceived with a dual purpose - to master the art of Django web development 
+                        and to delve into the intricacies of Django REST framework (DRF). As we 
+                        embarked on this exciting venture, we not only honed our skills in crafting 
+                        dynamic and interactive web applications but also deepened our understanding 
+                        of Python programming. Our platform stands as a fusion of innovation and 
+                        education, showcasing the seamless integration of Django's powerful features 
+                        and DRF's versatility. 
+                    </p>
+
+                    <footer>
+                        Version 1.0.0 - By Caio Bianchi
+                    </footer>
+                </div>
+            </div>
+        </div>
+{% endblock %}
