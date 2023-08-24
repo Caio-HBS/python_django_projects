@@ -15,6 +15,7 @@ def test_create_new_user(client, post_data_for_register) -> None:
     """
     url = reverse('register_page')
     response = client.post(url, data=post_data_for_register)
+    
     assert response.status_code == 302
     assert response.url == reverse('login_page')
 

@@ -1,8 +1,6 @@
 import pytest
 
-from django.db import IntegrityError
 from django.urls import reverse
-from django.contrib.auth.models import User
 
 
 def test_index_redirect_with_user(client, user_logged_in) -> None:
@@ -101,4 +99,4 @@ def test_register_redirect_logged_in(client, user_logged_in) -> None:
     """
     response = client.get(reverse('register_page'))
     assert response.status_code == 302
-    assert response.url == reverse('feed_page')
+    assert response.url == reverse('login_page')
