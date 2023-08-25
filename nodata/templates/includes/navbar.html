@@ -1,0 +1,23 @@
+{% load static %}
+<link rel="stylesheet" href="{% static "navbar.css" %}">
+<nav class="navbar">
+    <div class="navbar-left">
+        <div class="logo">
+            <img src="{% static 'images/dorin_logo.png' %}" alt="Logo">
+        </div>
+        <a href="{% url 'feed_page' %}" class="nav-link">Home</a>
+        <a href="{% url 'about_us_page' %}" class="nav-link">About Us</a>
+        <a href="https://github.com/Caio-HBS/python_django_projects/tree/main/nodata" class="nav-link"><img src="{% static 'images/github-logo.png' %}" alt="Logo">Code </a>
+    </div>
+    {% if request.user.is_authenticated %}
+        <div class="navbar-right">
+            <a href="{% url 'logout_page' %}" class="login-btn">Logout</a>
+        </div>
+    {% else %}
+        <div class="navbar-right">
+            <a href="{% url 'login_page' %}" class="login-btn">Login</a>
+        </div>
+    {% endif %}
+</nav>
+
+{% comment %} https://bootsnipp.com/snippets/yNa0V {% endcomment %}

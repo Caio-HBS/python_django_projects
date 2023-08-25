@@ -10,7 +10,7 @@ class Profile(models.Model):
     pfp = models.ImageField(upload_to="profile_pictures", blank=True, null=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=35)
-    custom_slug_profile = models.SlugField(max_length=15)
+    custom_slug_profile = models.SlugField(max_length=15, unique=True)
     friends = models.ManyToManyField('self', blank=True)
 
     def get_full_name(self):

@@ -1,1 +1,52 @@
-Post page
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "dorin/css/post_page.css" %}">
+{% endblock %}
+
+{% block content %}
+{% include 'includes/navbar.html' %}
+
+<div class="post-details">
+    <div class="author-info">
+        {% if post.parent_profile.pfp.url != "" %}
+            <img src="{{ post.parent_profile.pfp.url }}" alt="{{ post.parent_profile.user }} profile picture">
+        {% else %}
+            <img src="{% static 'images/default-pfp.jpg' %}" alt="{{ post.parent_profile.user }} profile picture">
+        {% endif %}
+        <div class="author-text">
+            <h2>{{ post.parent_profile.first_name }} {{ post.parent_profile.last_name }}</h2>
+            <a href="{% url 'profile_page' custom_slug_profile=post.parent_profile.custom_slug_profile %}"><p class="username">@{{ post.parent_profile.user }}</p></a>
+            <h5 class="time">{{ time }}</h5>
+        </div>
+    </div>
+    
+    <div class="post">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image">
+        {% endif %}
+        <p class="post-text">{{ post.post_text }}</p>
+    </div>
+    
+    <div class="comments">
+        <h3>Comments</h3>
+        {% for comment in comments %}
+            <div class="comment">
+                {% if comment.user.profile.pfp.url != "" %}
+                    <img src="{{ comment.user.profile.pfp.url }}">
+                {% else %}
+                    <img src="{% static 'images/default-pfp.jpg' %}">
+                {% endif %}
+                <a href="{% url 'profile_page' custom_slug_profile=comment.user.profile.custom_slug_profile %}"><h2 class="comment-username">@{{ comment.user.username }}</h2></a>
+                <p class="comment-text">{{ comment.comment_text }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <form action={% url 'post_page' post_slug=slug %} method="POST" class="comment-form">
+        {% csrf_token %}
+        <input type="text" name="text-input" placeholder="Leave a comment" maxlength="500" required id="id_comment_text"/>
+        <input type="submit" name="Submit" value="Submit" class='ghost-round full-width'/>
+    </form>
+</div>
+{% endblock %}

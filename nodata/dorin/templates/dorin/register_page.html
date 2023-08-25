@@ -4,21 +4,44 @@
 {% block page_title %}Dorin - Register{% endblock %}
 
 {% block css_files %}
-
+<link rel="stylesheet" href="{% static "dorin/css/register_page.css" %}">
 {% endblock %}
 
 {% block content %}
-    <form action={% url 'register_page'%} method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username"/>
-        <input type="text" name="email" placeholder="Enter email"/>
-        <input type="text" name="first-name" placeholder="Your first name"/>
-        <input type="text" name="last-name" placeholder="Your last name"/>
-        <input type="text" name="birthday" placeholder="Birthday (MM/DD/YYYY)"/>
-        <input type="text" name="slug" placeholder="Custom URL for your profile (15 characters)"/>
-        <input type="password" name="password" placeholder="Enter password"/>
-        <input type="password" name="confirm-password" placeholder="Enter password again"/>
-        <input type="file" name="profile-picture">
-        <input type="submit" name="Register"/>
-    </form>
+    <div class='bold-line'></div>
+        <div class='container'>
+          <div class='window'>
+            <div class='overlay'></div>
+            <div class='content'>
+              <form action={% url 'register_page' %} method="POST" enctype="multipart/form-data" class='input-fields'>
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username" required id="id_username" class='input-line full-width'/>
+                <input type="email" name="email" placeholder="Enter email"class='input-line full-width' required id="id_email"/>
+                <input type="text" name="first_name" placeholder="Your first name" class='input-line full-width' maxlength="20" required id="id_first_name"/>
+                <input type="text" name="last_name" placeholder="Your last name"class='input-line full-width' maxlength="35" required id="id_last_name"/>
+                <input type="date" name="birthday" class='input-line full-width' required id="id_birthday"/>
+                <input type="text" name="custom_slug_profile" placeholder="Custom URL for your profile"class='input-line full-width' maxlength="15" required id="id_custom_slug_profile"/>
+                <input type="password" name="password" placeholder="Enter password"class='input-line full-width' required id="id_password"/>
+                <input type="password" name="confirm_password" placeholder="Enter password again"class='input-line full-width' required id="id_confirm_password"/>
+                
+
+                {% if form.errors %}
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <div class="alert alert-danger">
+                        <p>{{ error }}</p>
+                      </div>
+                    {% endfor %}
+                  {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <div class="alert alert-danger">
+                    <p>{{ error }}</p>
+                  </div>
+                {% endfor %}
+                {% endif %}
+                <input type="submit" name="Register" value="Register" class='ghost-round full-width'/>
+              </form>
+            </div>       
+        </div>
+    </div>
 {% endblock %}
