@@ -45,7 +45,7 @@
     </div>
     <form action={% url 'post_page' post_slug=slug %} method="POST" class="comment-form">
         {% csrf_token %}
-        <input type="text" name="text-input" placeholder="Leave a comment" maxlength="500" required id="id_comment_text"/>
+        <input type="text" name="comment_text" placeholder="Leave a comment" maxlength="500" required id="id_comment_text"/>
         <input type="submit" name="Submit" value="Submit" class='ghost-round full-width'/>
     </form>
 </div>
