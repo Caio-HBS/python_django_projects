@@ -61,11 +61,4 @@ class Comment(models.Model):
         return f"{self.user.username} in response of {self.parent_post.parent_profile} ({self.parent_post.title})"
     
 
-class Likes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
-    likes = models.IntegerField(validators=[MinValueValidator(0)])
-
-    def __str__(self):
-            return f"{self.likes} likes on post {self.parent_post}"
     

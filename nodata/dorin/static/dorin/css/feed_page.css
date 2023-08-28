@@ -1,0 +1,159 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,500);
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #fff8e8;
+}
+
+.feed-container {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.left-column {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0px 15px 50px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    min-width: 200px;
+    max-height: 250px;
+    background: -webkit-linear-gradient(#00A2FF, #83d2ff);
+    background: linear-gradient(#00A2FF, #83d2ff);  
+    position: sticky;
+    top: 35%; 
+}
+
+.left-column-anchor {
+    text-decoration: none;
+    color: inherit;
+}
+
+.user-info {
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+}
+
+.profile-picture {
+    margin-top: 20px;
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%; 
+    object-fit: cover; 
+}
+
+.user-username,
+.user-full-name,
+.user-birthday {
+    margin: 5px 0;
+}
+
+.middle-column {
+    flex: 2;
+    max-width: calc(100% - 220px); /* Define uma largura máxima */
+    width: 100%; /* Faz com que a coluna ocupe o espaço horizontal */
+    padding: 20px;
+    box-sizing: border-box;
+    background: -webkit-linear-gradient(#00A2FF, #83d2ff);
+    background: linear-gradient(#00A2FF, #83d2ff); 
+    box-shadow: 0px 15px 50px 10px rgba(0, 0, 0, 0.2); /* Sombreamento */
+    border-radius: 5px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 0;
+}
+
+.new-post-form {
+    background-color: #aad9ff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 15px 50px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.new-post-form input[type="text"],
+.new-post-form input[type="file"] {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #aad9ff;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.new-post-form input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.new-post-form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.post-list {
+    list-style: none;
+    padding: 0;
+}
+
+.post {
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-decoration: none;
+    color: inherit;
+    text-align: justify;
+}
+
+.post img.post-image {
+    max-width: 100%;
+    height: auto;
+    object-fit:none;
+    border-radius: 5px;
+}
+
+.post .post-header {
+    display: flex;
+    align-items:flex-end;
+    gap: 5px;
+}
+
+.post .user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.post .full-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+}
+
+.post .username {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
+
+.post .post-publication-date {
+    font-size: 12px;
+    color: #2e2e2e;
+    margin: 0;
+}

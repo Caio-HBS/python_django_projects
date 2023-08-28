@@ -1,37 +1,66 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block page_title %}Dorin - Login{% endblock %}
+{% block page_title %}Dorin - Feed{% endblock %}
 
 {% block css_files %}
-
+<link rel="stylesheet" href="{% static "dorin/css/feed_page.css" %}">
 {% endblock %}
 
 {% block content %}
-<h1>{{ profile }}</h1>
-<ul>
-        {% for post in posts %}
-            <li>
-            <h2>{{ post.post.title }}</h2>
-            <p>{{ post.post.post_text }}</p>
-            {% if post.post.image %}
-                <img src="{{ post.post.image.url }}" alt="post image">
-            {% endif %}
-            <p>Publication date: {{ post.post.publication_date_post }}</p>
-            <h3>Comments:</h3>
-            <ul>
-            {% for comment in post.comments %}
-                <li>{{ comment.comment_text }} - {{ comment.user }}</li>
-            {% empty %}
-                <li>No comments yet.</li>
-            {% endfor %}
+    {% include 'includes/navbar.html' %}
+    <div class="feed-container">
+        <a href="{% url "profile_page" custom_slug_profile=request.user.profile.custom_slug_profile%}" class="left-column-anchor">
+            <div class="left-column">
+                <div class="user-info">
+                    {% if request.user.profile.pfp != "" %}
+                        <img src="{{ request.user.profile.pfp.url }}" alt="Profile picture" class="profile-picture">
+                    {% else %}
+                        <img src="{% static 'images/default-pfp.jpg' %}" alt="Profile picture" class="profile-picture">
+                    {% endif %}
+                    <h2 class="user-full-name">{{ request.user.profile.first_name }} {{ request.user.profile.last_name }}</h2>
+                    <h3 class="user-username">{{ request.user }}</h3>
+                    <h4 class="user-birthday">{{ request.user.profile.birthday }}</h4>
+                </div>
+            </div>
+        </a>
+        <div class="middle-column">
+            <form action={% url 'feed_page' %} method="POST" enctype="multipart/form-data" class="new-post-form">
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Title of your post" maxlength="50" required id="id_title"/>
+                <input type="text" name="post_text" placeholder="State your mind"  required id="id_post_text"/>
+                <input type="file" name="image" accept="image/*" id="id_image"/>
+                <input type="submit" name="Submit" value="Submit" class="post-button"/> 
+            </form>
+            <ul class="post-list">
+                {% for single_post in posts %}
+                    <li>
+                        <a href="{% url 'post_page' post_slug=single_post.slug %}" class="post">
+                            <div class="post-header">
+                                {% if single_post.profile.pfp != "" %}
+                                    <img src="{{ single_post.profile.pfp.url }}" alt="Profile picture" class="profile-picture">
+                                {% else %}
+                                    <img src="{% static 'images/default-pfp.jpg' %}" alt="Profile picture" class="profile-picture">
+                                {% endif %}
+                                <div class="user-details">
+                                    <h2 class="full-name">{{ single_post.profile.first_name }} {{ single_post.profile.last_name }}</h2>
+                                    <h3 class="username">@{{ single_post.profile.user }}</h3>
+                                </div>
+                            </div>
+                            <div class="post-info">
+                                <p class="post-text">{{ single_post.post.post_text }}</p>
+                                {% if single_post.post.image %}
+                                    <img src="{{ single_post.post.image.url }}" alt="post image" class="post-image">
+                                {% endif %}
+                                <p class="post-publication-date">{{ single_post.post.publication_date_post }}</p>
+                            </div>
+                        </a>
+                    </li>
+                {% empty %}
+                    <p class="post-text">You don't have any posts yet.</p>
+                {% endfor %}
             </ul>
-
-            <h3>Likes:</h3>
-            <p>{{ post.likes.count }} people like this post.</p>
-            </li>
-        {% empty %}
-            <p>No posts yet.</p>
-        {% endfor %}
-</ul>
+        </div>
+    </div>
 {% endblock %}
+

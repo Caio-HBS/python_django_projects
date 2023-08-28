@@ -11,6 +11,7 @@
             <a href="{% url 'feed_page' %}" class="nav-link">Home</a>
         {% endif %}
         <a href="{% url 'about_us_page' %}" class="nav-link">About Us</a>
+        <a href="{% url 'discover_page' %}" class="nav-link">Discover</a>
         <a href="https://github.com/Caio-HBS/python_django_projects/tree/main/nodata" class="nav-link"><img src="{% static 'images/github-logo.png' %}" alt="Logo">Code </a>
     </div>
     {% if request.user.is_authenticated %}
