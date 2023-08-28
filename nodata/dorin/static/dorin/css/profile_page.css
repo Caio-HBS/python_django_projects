@@ -1,0 +1,190 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,500);
+
+h1, h2, h3, h4, p, img {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #fff4db;
+  margin-top: 80px;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.profile-info {
+  text-align: center;
+  background: -webkit-linear-gradient(#00A2FF, #83d2ff);
+  background: linear-gradient(#00A2FF, #83d2ff);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 15px 50px 10px rgba(0, 0, 0, 0.2);
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+}
+
+.full-name {
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: #dff3ff;
+}
+
+.username {
+  font-size: 18px;
+  color: #868686;
+  margin-bottom: 10px;
+}
+
+.birthday {
+  font-size: 16px;
+  color: #000000;
+}
+
+.post {
+  background: -webkit-linear-gradient(#00A2FF, #83d2ff);
+  background: linear-gradient(#00A2FF, #83d2ff);
+  border-radius: 10px;
+  box-shadow: 0px 15px 50px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin-top: 20px; /* Espaço entre os containers */
+  margin-left: 75px; /* Centralize horizontalmente */
+  margin-right: 75px;
+}
+
+.post a {
+  text-decoration: none;
+  color: #000000;
+}
+
+/* Estilos para o cabeçalho do post */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.profile-picture-post {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.post-username {
+  font-family: 'Roboto', sans-serif; /* Use a mesma fonte da página */
+  font-size: 18px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.post-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 10px auto; /* Centralizar a imagem */
+  position: relative; /* Adicionar posição relativa para o container */
+}
+
+.post-image img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.post-text {
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: justify;
+}
+
+
+
+
+/* Estilos gerais para o formulário */
+.change-pfp-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Estilo para o input de arquivo */
+.change-pfp-form input[type="file"] {
+  opacity: 0; /* Torna o input invisível */
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+/* Estilo para o botão de upload de imagem */
+.pfp-button {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.pfp-button:hover {
+  background-color: #2980b9;
+}
+
+/* Estilo para o botão de upload de imagem quando desabilitado */
+.pfp-button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Estilo para o texto de instrução de upload */
+.change-pfp-form label {
+  margin-top: 10px;
+  font-family: roboto;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.change-pfp-form label:hover {
+  color: #333;
+}
+
+/* Estilo para a visualização da imagem carregada */
+.profile-picture-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+/* Estilo para a mensagem de erro */
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 5px;
+}

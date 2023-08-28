@@ -4,14 +4,42 @@
 {% block page_title %}{{ profile.user }}{% endblock %}
 
 {% block css_files %}
-
+<link rel="stylesheet" href="{% static "dorin/css/profile_page.css" %}">
 {% endblock %}
 
 {% block content %}
-    {% for data in profile %}
-        {{ data.user }}
-        {{ data.birthday }}
-        {{ data.first_name }}
-        {{ data.last_name }}
-    {% endfor %}
+    {% include 'includes/navbar.html' %}
+    <div class="profile-info">
+        {% if profile.pfp != "" %}
+            <img src="{{ profile.pfp.url }}" alt="Profile picture" class="profile-picture">
+        {% else %}
+            <img src="{% static 'images/default-pfp.jpg' %}" alt="Profile picture" class="profile-picture">
+        {% endif %}
+        <h2 class="full-name">{{ profile.first_name }} {{ profile.last_name }}</h2>
+        
+        <h3 class="username">@{{ profile.user }}</h3>
+        <h4 class="birthday">{{ profile.birthday }}</h4>
+        {% if request.user == profile.user %} 
+            <form action={% url 'profile_page' custom_slug_profile=custom_slug_profile %} method="POST" enctype="multipart/form-data" class="change-pfp-form">
+                {% csrf_token %}
+                <label class="custom-file-input" for="id_pfp">Change pfp</label>
+                <input type="file" name="pfp" accept="image/*" required id="id_pfp"/>
+                <input type="submit" name="Submit" value="Submit" class="pfp-button"/> 
+            </form>
+        {% endif %}
+    </div>
+    <div class="post">
+        {% for post in posts %}
+            <a href="{% url 'post_page' post_slug=post.post_slug %}">
+                <div class="post-header">
+                    <img src="{{ post.parent_profile.pfp.url }}" alt="Post picture" class="profile-picture-post">
+                    <h2 class="post-username">@{{ profile.user }}</h2>
+                </div>
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="Post Image" class="post-image">
+                {% endif %}
+                <p class="post-text">{{ post.post_text }}</p>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}
