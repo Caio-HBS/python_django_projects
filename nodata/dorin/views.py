@@ -1,20 +1,27 @@
-from datetime import datetime
+from django.utils.dateformat import format
 
 from dorin.models import (
     Profile, 
     Post, 
     Comment, 
-    Likes
 )
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.db.models import Q, Count
+
+from dorin.forms import (
+    LoginForm, 
+    NewPostForm, 
+    RegisterForm, 
+    CommentForm, 
+    PfpForm,
+    FriendToggleForm,
+)
+
+from django.views import View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.utils.text import slugify
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
-from nodata.settings import BASE_DIR
 
 
 def index_view(request):
@@ -46,23 +53,16 @@ def login_view(request):
         return redirect('feed_page')
     
     elif request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-
-        try:
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request, "ERROR: Username does not exist")
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
+        auth_form = LoginForm(data=request.POST)
+        if auth_form.is_valid():
+            user = auth_form.get_user()
             login(request, user)
             return redirect('feed_page')
         else:
-            messages.error(request, "ERROR: Username OR password wrong")
-
-    return render(request, 'dorin/login_page.html')
+            return render(request, 'dorin/login_page.html', {"form": auth_form})
+    else:
+        auth_form = LoginForm()
+        return render(request, 'dorin/login_page.html', {"form": auth_form})
 
 
 def logout_view(request):
@@ -81,141 +81,139 @@ def logout_view(request):
     else:
         return redirect('login_page')
     
-
-def register_view(request):
+    
+class RegisterView(View):
     """
-        View for registering new users.
+        Class-based view for registering new users.
 
         If the user is already logged in, redirects them to the feed page, 
         otherwise validates the post request for register as new users.
 
         URL Call: dorin/register/
     """
-    if request.user.is_authenticated:
-        return redirect('feed_page')
-    elif request.method == "POST":
-        username = request.POST['username']
-        # Tests to see if the username is already in use in the db.
-        try:
-            get_user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            password = request.POST['password']
-            confirm_password = request.POST['confirm-password']
-            # Tests to see if the passwords match.
-            if password != confirm_password:
-                messages.error(request, "ERROR: Passwords do not match")
-                return render(request, 'dorin/register_page.html')
-            # Creates the new user based on the passed-on data.
-            else:
-                email = request.POST['email']
-                first_name = request.POST['first-name']
-                last_name = request.POST['last-name']
-                birthday = request.POST['birthday']
-                pfp = request.FILES['profile-picture'] or ""
-                formatted_birthday = datetime.strptime(birthday, "%m/%d/%Y")
-                formatted_birthday_to_final = formatted_birthday.strftime("%Y-%m-%d")
-                slug = slugify(request.POST['slug'])
-        
-                new_user = User.objects.create_user(
-                    username=username, email=email, password=password
-                )
-                new_user.save()
-                # Tries to get the newly created user, if successful, creates the 
-                # profile object.
-                try:
-                    get_new_user = User.objects.get(username=username)
-                except User.DoesNotExist:
-                    messages.error(request, "ERROR: error while retrieving user")
-                    return render(request, 'dorin/register_page.html')
-                else:
-                    profile_info = Profile.objects.create(
-                    user=get_new_user,
-                    birthday=formatted_birthday_to_final,
-                    pfp=pfp,
-                    first_name=first_name,
-                    last_name=last_name,
-                    custom_slug_profile=slug
-                    )
-                    profile_info.save()
-                    print("DB: New user and profile created successfully")
-                    return redirect('login_page')
+
+    def get(self, request):
+        """
+            Handles the GET method to simply render the register page with the 
+            form.
+        """
+        if request.user.is_authenticated:
+            return redirect('login_page')
         else:
-            messages.error(request, "ERROR: Username already in use")
-            return render(request, 'dorin/register_page.html')
-        
-    return render(request, 'dorin/register_page.html') 
+            context = {
+                "form": RegisterForm()
+            }
+            return render(request, 'dorin/register_page.html', context)
+
+    def post(self, request):
+        """
+            Handles the POST method registration.
+        """
+        register_form = RegisterForm(request.POST)
+
+        if register_form.is_valid():
+            username = register_form.cleaned_data['username']
+            email = register_form.cleaned_data['email']
+            password = register_form.cleaned_data['password']
+            confirm_password = register_form.cleaned_data['confirm_password']
+            custom_slug_profile = register_form.cleaned_data['custom_slug_profile']
+            
+            # Password check
+            if password != confirm_password:
+                register_form.add_error('confirm_password', 'Passwords do not match.')
+                return render(request, 'dorin/register_page.html', {'form': register_form})
+            # Username check.
+            if User.objects.filter(username=username).exists():
+                register_form.add_error('username', 'This username is already taken.')
+                return render(request, 'dorin/register_page.html', {'form': register_form})
+            # Slug check.
+            if Profile.objects.filter(custom_slug_profile=custom_slug_profile).exists():
+                register_form.add_error('custom_slug_profile', 'This custom slug is already taken.')
+                return render(request, 'dorin/register_page.html', {'form': register_form})
+            
+            new_user = User.objects.create_user(
+                username=username, 
+                email=email, 
+                password=password
+            )
+            Profile.objects.create(
+                user=new_user, 
+                birthday=register_form.cleaned_data['birthday'],
+                first_name=register_form.cleaned_data['first_name'],
+                last_name=register_form.cleaned_data['last_name'],
+                custom_slug_profile=custom_slug_profile, 
+            )
+            
+            return redirect('login_page')
+
+        context = {
+            "form": register_form
+        }
+        return render(request, 'dorin/register_page.html', context)
 
 
-@login_required(login_url='login_page')
-def feed_view(request):
+class FeedView(View):
     """
         Feed view for seeing posts by the user and their friends (locked to
         logged in users).
 
-        Queries the posts objects based on the user and their friends, passes it
-        to the html render.
-
         URL Call: dorin/feed/
     """
-    # Retrieves the user from the request, so that the query can be made.
-    user = request.user
-    profile = Profile.objects.get(user=user)
-    friends = profile.friends.all()
-    # Uses the Q class for a more advanced query.
-    q = Q(parent_profile__in=friends) | Q(parent_profile=profile)
-    posts = Post.objects.filter(q).order_by("-publication_date_post")
-    # Appends the retrieved data in a list so that it can be passed as a context
-    #  dict.
-    context_list = []
-    for post in posts:
-        comments = Comment.objects.filter(parent_post=post)
-        likes = Likes.objects.filter(parent_post=post)
-        context_list.append({
-            'post': post,
-            'comments': comments,
-            'likes': likes,
-        })
-    return render(request, 'dorin/feed_page.html', {'posts': context_list})
-    
-
-@login_required(login_url='login_page')
-def new_post_view(request):
-    """
-        View dedicated to making new posts (locked to logged in users).
-
-        Validates the post request and makes a new post.
-
-        URL Call: feed/new-post/
-    """
-    # TODO: make a print statement for when the new post is made.
-    if request.method == "POST":
-        # Retrieves the user so that the new post can be saved,
+    def get(self, request):
+        """
+            Handles the GET method by querying the posts objects based on the 
+            user and their friends, passes it to the html template.
+        """
         user = request.user
-        try:
-            get_user = User.objects.get(username=user)
-        except:
-            messages.error(
-                'There has been an error retrieving your data, we are sorry :('
-            )
-        # Uses the data to create the object for the post and saves it, 
-        # redirecting the user afterwards.
-        get_user_profile = get_user.profile
-        title = request.POST['title'][:50].rstrip()
-        post_text = request.POST['post-text'].rstrip()
+        profile = Profile.objects.get(user=user)
+        friends = profile.friends.all()
+        new_post_form = NewPostForm()
         
-        try:
-            image = request.FILES['post-picture']
-        except:
-            image = ""
+        q = Q(parent_profile__in=friends) | Q(parent_profile=profile)
+        posts = Post.objects.filter(q).order_by("-publication_date_post")
+        context_list_for_posts = []
+        for post in posts:
+            context_list_for_posts.append({
+                'post': post,
+                'slug': post.post_slug,
+                'profile': post.parent_profile,
+            })
 
-        new_post = Post.objects.create(
-            parent_profile=get_user_profile, title=title, 
-            post_text=post_text, image=image, post_slug=slugify(title)
-        )
-        new_post.save()
-        return redirect('feed_page')
+        context = {
+            'posts': context_list_for_posts,
+            'form': new_post_form,
+            'profile': profile,
+        }
+        return render(request, 'dorin/feed_page.html', context)
+    
+    def post(self, request):
+        """
+            Handles the POST method by validating the form and making it a new
+            post if valid.
+        """
+        post_form = NewPostForm(request.POST, request.FILES)
+        user = request.user
+        retrieved_user = get_object_or_404(User, username=user)
 
-    return render(request, 'dorin/new_post_page.html')
+        if post_form.is_valid():
+            get_user_profile = retrieved_user.profile
+            title = post_form.cleaned_data['title']
+            post_text = post_form.cleaned_data['post_text']
+        
+            try:
+                image = post_form.cleaned_data['image']
+            except:
+                image = ""
+
+            new_post = Post.objects.create(
+                parent_profile=get_user_profile, title=title, 
+                post_text=post_text, image=image, post_slug=slugify(title)
+            )
+            new_post.save()
+            return redirect('feed_page')
+        else:
+            return render(request, 'dorin/feed_page.html', {'form': post_form})
+decorated_feed_view = login_required(login_url='login_page')(FeedView.as_view())
 
 
 @login_required(login_url='login_page')
@@ -231,34 +229,73 @@ def single_profile_view(request, custom_slug_profile):
         Params:
             custom_slug_profile: slug passed in the url reflecting an object on 
             the db.
-
     """
-    try:
-        profile = Profile.objects.filter(custom_slug_profile=custom_slug_profile)
-    except:
-        messages.error("We are sorry, but there's been an error")
-    else:
+    retrieved_profile = get_object_or_404(Profile, custom_slug_profile=custom_slug_profile)
+    logged_in_profile = request.user.profile
+    posts = retrieved_profile.posts.all()
+    
+    if request.method == "POST":
+        change_pfp_form = PfpForm(request.POST, request.FILES)
+        add_friend_form = FriendToggleForm(request.POST)
         
-        return render(request, 'dorin/profile_page.html', {
-            "profile": profile
-        })
+        if change_pfp_form.is_valid():
+            new_pfp = change_pfp_form.cleaned_data['pfp']
+            retrieved_profile.pfp = new_pfp
+            retrieved_profile.save()
+            return redirect(
+                "profile_page", custom_slug_profile=custom_slug_profile
+            )
+        
+        elif add_friend_form.is_valid():
+            action = add_friend_form.cleaned_data['action']
+            if action == 'add_friend':
+                logged_in_profile.friends.add(retrieved_profile)
+            elif action == 'unfriend':
+                logged_in_profile.friends.remove(retrieved_profile)
+            return redirect(
+                "profile_page", custom_slug_profile=custom_slug_profile
+            )
 
-    return render(request, 'dorin/profile_page.html')
+    else:
+        change_pfp_form = PfpForm()
+        add_friend_form = FriendToggleForm()
+        
+    return render(request, 'dorin/profile_page.html', {
+        "profile": retrieved_profile,
+        "posts": posts,
+        "form": change_pfp_form,
+        "friend_form": add_friend_form,
+        'custom_slug_profile': custom_slug_profile
+    })
 
 
 @login_required(login_url='login_page')
 def single_post_view(request, post_slug):
-    try:
-        post = Post.objects.filter(post_slug=post_slug)
-    except:
-        messages.error("We are sorry, but there's been an error")
-    else:
-        
-        return render(request, 'dorin/post_page.html', {
-            "post": post
-        })
-    
-    return render(request, 'dorin/post_page.html')
+    post = get_object_or_404(Post, post_slug=post_slug)
+    comments_on_post = post.comments.all
+    time_of_post = post.publication_date_post
+    formatted_time = format(time_of_post, "F j, Y H:i")
+    comment_form = CommentForm(request.POST)
+    context = {
+        "slug": post_slug,
+        "comments": comments_on_post,
+        "post": post,
+        "form": comment_form,
+        "time": formatted_time,
+    }
+    if request.method == "POST":
+        if comment_form.is_valid():   
+            user = request.user
+            print(request.user)
+            comment_text = comment_form.cleaned_data['comment_text']
+            Comment.objects.create(
+                user=user, 
+                parent_post=post, 
+                comment_text=comment_text, 
+            )
+            return render(request, 'dorin/post_page.html', context)
+
+    return render(request, 'dorin/post_page.html', context)
 
 
 @login_required(login_url='login_page')
@@ -273,10 +310,13 @@ def discover_view(request):
     current_user = request.user
     current_profile = current_user.profile
     max_posts = 10
-    # A quick way to make a query with the desired maximum number of posts.
-    posts = Post.objects.exclude(parent_profile=current_profile).annotate(num_likes=Count('likes')).order_by('?')[:max_posts]
+    
+    posts = Post.objects.exclude(parent_profile=current_profile).order_by('?')[:max_posts]
     
     return render(request, 'dorin/discover_page.html', {
         'posts': posts
     })
-    
+
+
+def about_us_view(request):
+    return render(request, 'dorin/about_us.html')

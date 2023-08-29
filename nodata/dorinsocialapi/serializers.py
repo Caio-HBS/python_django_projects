@@ -33,7 +33,8 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class ProfileBasicSerializer(serializers.ModelSerializer):
-    # TODO: Figure out the profile picture.
+    pfp_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
         fields = [
@@ -43,13 +44,19 @@ class ProfileBasicSerializer(serializers.ModelSerializer):
             'endpoint',
             'endpoint_custom_slug',
             'pk',
-        #    'pfp',
+            'pfp_url',
         ]
+
+    def get_pfp_url(self, obj):
+        if obj.pfp:
+            return self.context['request'].build_absolute_uri(obj.pfp.url)
+        return None
 
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
-    # TODO: Figure out the profile picture.
+    pfp_url = serializers.SerializerMethodField()
     posts = PostSerializer(many=True, read_only=True)
+
     class Meta:
         model = Profile
         fields = [
@@ -59,7 +66,12 @@ class ProfileDetailSerializer(serializers.ModelSerializer):
             'endpoint',
             'endpoint_custom_slug',
             'pk',
+            'pfp_url',
             'posts',
-        #    'pfp',
+            
         ]
 
+    def get_pfp_url(self, obj):
+        if obj.pfp:
+            return self.context['request'].build_absolute_uri(obj.pfp.url)
+        return None

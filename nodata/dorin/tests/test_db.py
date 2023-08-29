@@ -49,7 +49,7 @@ def test_create_new_post(client, create_posts_data, user_with_profile) -> None:
             user_with_profile: custom fixture that provides a user AND a profile,
             required for the creation of the post.
     """
-    url = reverse('new_post_page')
+    url = reverse('feed_page')
     response = client.post(url, data=create_posts_data, format='multipart')
     assert response.status_code == 302
     assert Post.objects.filter(title='Test Title').exists
@@ -69,7 +69,7 @@ def test_retrieve_single_post(client, create_posts_data, user_with_profile) -> N
             user_with_profile: custom fixture that provides a user AND a profile,
             required for the creation of the post.
     """
-    url_new_post = reverse('new_post_page')
+    url_new_post = reverse('feed_page')
     response_for_post_method = client.post(url_new_post, data=create_posts_data, format='multipart')
     
     post_slug = 'test-title'

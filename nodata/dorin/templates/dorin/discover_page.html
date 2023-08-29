@@ -4,15 +4,29 @@
 {% block page_title %}Dorin - Discover{% endblock %}
 
 {% block css_files %}
-
+<link rel="stylesheet" href="{% static "dorin/css/discover_page.css" %}">
 {% endblock %}
 
 {% block content %}
-    {% for post in posts %}
+    {% include 'includes/navbar.html' %}
+    <div class="posts-container">
         <div class="post">
-            <h2>{{ post.title }}</h2>
-            <p>{{ post.post_text }}</p>
-            <p>Likes: {{ post.num_likes }}</p>
+            {% for post in posts %}
+                <a href="{% url 'post_page' post_slug=post.post_slug %}">
+                    <div class="post-header">
+                        {% if post.parent_profile.pfp != "" %}
+                            <img src="{{ post.parent_profile.pfp.url }}" alt="Post picture" class="profile-picture-post">
+                        {% else %}
+                            <img src="{% static 'images/default-pfp.jpg' %}" alt="Profile picture" class="profile-picture-post">
+                        {% endif %}
+                        <h2 class="post-username">@{{ post.parent_profile.user }}</h2>
+                    </div>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post Image" class="post-image">
+                    {% endif %}
+                    <p class="post-text">{{ post.post_text }}</p>
+                </a>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}
