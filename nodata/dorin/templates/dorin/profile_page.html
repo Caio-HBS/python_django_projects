@@ -26,13 +26,29 @@
                 <input type="file" name="pfp" accept="image/*" required id="id_pfp"/>
                 <input type="submit" name="Submit" value="Submit" class="pfp-button"/> 
             </form>
+        {% else %}
+        <form action={% url 'profile_page' custom_slug_profile=custom_slug_profile %} method="POST">
+            {% csrf_token %}
+            {% if profile in request.user.profile.friends.all %}
+                <input type="hidden" name="action" value="unfriend">
+                <button type="submit" class="pfp-button pfp-button-remove">Undo friendship</button>
+            {% else %}
+                <input type="hidden" name="action" value="add_friend">
+                <button type="submit" class="pfp-button pfp-button-add">Add friend</button>
+            {% endif %}
+        </form>
+        
         {% endif %}
     </div>
     <div class="post">
         {% for post in posts %}
             <a href="{% url 'post_page' post_slug=post.post_slug %}">
                 <div class="post-header">
-                    <img src="{{ post.parent_profile.pfp.url }}" alt="Post picture" class="profile-picture-post">
+                    {% if post.parent_profile.pfp != "" %}
+                        <img src="{{ post.parent_profile.pfp.url }}" alt="Post picture" class="profile-picture-post">
+                    {% else %}
+                        <img src="{% static 'images/default-pfp.jpg' %}" alt="Profile picture" class="profile-picture-post">
+                    {% endif %}
                     <h2 class="post-username">@{{ profile.user }}</h2>
                 </div>
                 {% if post.image %}

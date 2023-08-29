@@ -64,8 +64,8 @@ body {
   border-radius: 10px;
   box-shadow: 0px 15px 50px 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
-  margin-top: 20px; /* Espaço entre os containers */
-  margin-left: 75px; /* Centralize horizontalmente */
+  margin-top: 20px; 
+  margin-left: 75px; 
   margin-right: 75px;
 }
 
@@ -74,7 +74,6 @@ body {
   color: #000000;
 }
 
-/* Estilos para o cabeçalho do post */
 .post-header {
   display: flex;
   align-items: center;
@@ -90,7 +89,7 @@ body {
 }
 
 .post-username {
-  font-family: 'Roboto', sans-serif; /* Use a mesma fonte da página */
+  font-family: 'Roboto', sans-serif; 
   font-size: 18px;
   color: #ffffff;
   margin: 0;
@@ -100,8 +99,8 @@ body {
   display: block;
   max-width: 100%;
   height: auto;
-  margin: 10px auto; /* Centralizar a imagem */
-  position: relative; /* Adicionar posição relativa para o container */
+  margin: 10px auto; 
+  position: relative; 
 }
 
 .post-image img {
@@ -117,10 +116,6 @@ body {
   text-align: justify;
 }
 
-
-
-
-/* Estilos gerais para o formulário */
 .change-pfp-form {
   display: flex;
   flex-direction: column;
@@ -128,15 +123,13 @@ body {
   margin-top: 20px;
 }
 
-/* Estilo para o input de arquivo */
 .change-pfp-form input[type="file"] {
-  opacity: 0; /* Torna o input invisível */
+  opacity: 0; 
   width: 0;
   height: 0;
   position: absolute;
 }
 
-/* Estilo para o botão de upload de imagem */
 .pfp-button {
   background-color: #3498db;
   color: white;
@@ -153,13 +146,11 @@ body {
   background-color: #2980b9;
 }
 
-/* Estilo para o botão de upload de imagem quando desabilitado */
 .pfp-button[disabled] {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-/* Estilo para o texto de instrução de upload */
 .change-pfp-form label {
   margin-top: 10px;
   font-family: roboto;
@@ -173,7 +164,6 @@ body {
   color: #333;
 }
 
-/* Estilo para a visualização da imagem carregada */
 .profile-picture-preview {
   width: 100px;
   height: 100px;
@@ -182,9 +172,41 @@ body {
   margin-top: 10px;
 }
 
-/* Estilo para a mensagem de erro */
 .error-message {
   color: #e74c3c;
   font-size: 14px;
   margin-top: 5px;
+}
+
+.post .pfp-button-add {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.post .pfp-button-add:hover {
+  background-color: #2980b9;
+}
+
+/* Estilo para o botão de desfazer amizade */
+.post .pfp-button-remove {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.post .pfp-button-remove:hover {
+  background-color: #c0392b;
 }

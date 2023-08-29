@@ -48,3 +48,6 @@ class CommentForm(forms.Form):
 class PfpForm(forms.Form):
     pfp = forms.ImageField(required=True)
 
+
+class FriendToggleForm(forms.Form):
+    action = forms.CharField(widget=forms.HiddenInput())
