@@ -3,8 +3,6 @@ version: '3.9'
 services:
   db:
     image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres_nodata
       - POSTGRES_USER=nodata_user
@@ -12,10 +10,11 @@ services:
   
   gunicorn_web: 
     build:
-      dockerfile: Dockerfile.dev
       context: .
-    volumes: 
-      - .:/app
+      dockerfile: ./Dockerfile
+    volumes:
+      - static_data:/app/staticfiles
+      - upload_data:/app/uploads
     ports: 
       - "8000:8000"
     environment:
@@ -25,14 +24,19 @@ services:
     depends_on:
       - db
   
-  nginx: 
-    image: nginx:latest
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
     restart: on-failure
-    volumes:
-      - ./nginx/nginx.dev.conf:/etc/nginx/conf.d/default.conf
-      - ./staticfiles:/static
-      - ./uploads:/uploads
     ports:
       - "80:80" 
+    volumes:
+      - static_data:/static_data
+      - upload_data:/upload_data
     depends_on:
       - gunicorn_web
+
+volumes:
+  static_data:
+  upload_data:
